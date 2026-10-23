@@ -1,0 +1,21 @@
+{
+  "name": "teamup",
+  "version": "1.0.0",
+  "description": "TeamUp — Student Project Collaboration Platform",
+  "private": true,
+  "scripts": {
+    "start:backend": "npm --prefix backend start",
+    "start:frontend": "npm --prefix frontend run dev",
+    "build:frontend": "npm --prefix frontend run build",
+    "test:backend": "npm --prefix backend test"
+  },
+  "keywords": [
+    "teamup",
+    "student-collaboration",
+    "react",
+    "express",
+    "mysql"
+  ],
+  "author": "",
+  "license": "ISC"
+}
