@@ -2,9 +2,9 @@
   "name": "teamup-backend",
   "version": "1.0.0",
   "description": "Backend API for TeamUp Student Collaboration Platform",
-  "main": "src/server.js",
+  "main": "server.js",
   "scripts": {
-    "start": "node src/server.js",
+    "start": "node server.js",
     "dev": "node src/server.js",
     "test": "node tests/run-tests.js"
   },
