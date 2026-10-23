@@ -17,3 +17,4 @@ router.put('/me/skills', requireAuth, validateBody(validateUserSkills), userCont
 router.get('/:id', userController.getUserById);
 
 module.exports = router;
+

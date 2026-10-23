@@ -33,3 +33,4 @@ export default function SkeletonLoader({ type = 'card', count = 3 }) {
     </div>
   );
 }
+

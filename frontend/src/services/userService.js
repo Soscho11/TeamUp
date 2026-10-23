@@ -26,3 +26,4 @@ export const userService = {
     return response.data.skills;
   },
 };
+

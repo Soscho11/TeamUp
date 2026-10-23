@@ -14,10 +14,18 @@ export default function SkillBadge({ name, proficiency, onRemove, variant = 'pri
   };
 
   return (
-    <span className={`badge ${getVariantClass()}`}>
+    <span
+      className={`badge ${getVariantClass()}`}
+      style={{
+        padding: '0.2rem 0.6rem',
+        fontSize: '0.725rem',
+        fontWeight: 500,
+        letterSpacing: '0.01em',
+      }}
+    >
       <span>{name}</span>
       {proficiency && (
-        <span style={{ opacity: 0.75, fontSize: '0.7rem' }}>• {proficiency}</span>
+        <span style={{ opacity: 0.65, fontSize: '0.675rem', fontWeight: 400 }}>• {proficiency}</span>
       )}
       {onRemove && (
         <button
@@ -35,10 +43,14 @@ export default function SkillBadge({ name, proficiency, onRemove, variant = 'pri
             alignItems: 'center',
             padding: 0,
             marginLeft: '0.2rem',
+            opacity: 0.7,
+            transition: 'opacity 0.15s',
           }}
+          onMouseEnter={(e) => (e.currentTarget.style.opacity = '1')}
+          onMouseLeave={(e) => (e.currentTarget.style.opacity = '0.7')}
           aria-label={`Remove skill ${name}`}
         >
-          <X size={12} />
+          <X size={11} />
         </button>
       )}
     </span>

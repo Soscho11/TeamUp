@@ -31,3 +31,4 @@ router.get('/:id/members', teamController.getProjectMembers);
 router.delete('/:id/members/:userId', requireAuth, teamController.removeMember);
 
 module.exports = router;
+

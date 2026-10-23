@@ -35,3 +35,4 @@ module.exports = {
   NOTIFICATION_TYPES,
   PROJECT_CATEGORIES,
 };
+

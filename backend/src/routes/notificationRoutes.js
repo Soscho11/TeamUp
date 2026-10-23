@@ -9,3 +9,4 @@ router.patch('/read-all', requireAuth, notificationController.markAllAsRead);
 router.patch('/:id/read', requireAuth, notificationController.markAsRead);
 
 module.exports = router;
+

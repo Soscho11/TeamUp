@@ -48,3 +48,4 @@ export default function LoadingSpinner({ size = 24, message = '', fullScreen = f
 
   return content;
 }
+

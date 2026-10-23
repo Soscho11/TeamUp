@@ -17,6 +17,8 @@ import {
   Globe,
   Database,
   Lock,
+  CheckCircle2,
+  GitBranch,
 } from 'lucide-react';
 
 export default function LandingPage() {
@@ -42,58 +44,89 @@ export default function LandingPage() {
     <div>
       {/* Hero Section */}
       <section
+        className="bg-grid"
         style={{
-          padding: '5rem 0 4rem',
-          background: 'radial-gradient(ellipse at 50% -10%, rgba(37, 99, 235, 0.18), transparent 70%)',
-          borderBottom: '1px solid var(--border-card)',
+          padding: '6rem 0 5rem',
+          position: 'relative',
+          borderBottom: '1px solid var(--border-subtle)',
+          overflow: 'hidden',
         }}
       >
-        <div className="container" style={{ textAlign: 'center', maxWidth: '840px' }}>
+        {/* Glow backdrop */}
+        <div
+          style={{
+            position: 'absolute',
+            top: '-20%',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            width: '600px',
+            height: '400px',
+            background: 'radial-gradient(circle, rgba(37, 99, 235, 0.22) 0%, rgba(56, 189, 248, 0.05) 50%, transparent 70%)',
+            filter: 'blur(50px)',
+            pointerEvents: 'none',
+          }}
+        />
+
+        <div className="container" style={{ position: 'relative', textAlign: 'center', maxWidth: '880px' }}>
+          {/* Badge */}
           <div
             style={{
               display: 'inline-flex',
               alignItems: 'center',
               gap: '0.5rem',
-              padding: '0.35rem 0.85rem',
+              padding: '0.35rem 0.95rem',
               borderRadius: 'var(--radius-full)',
-              backgroundColor: 'rgba(56, 189, 248, 0.1)',
-              border: '1px solid rgba(56, 189, 248, 0.25)',
-              color: 'var(--accent)',
-              fontSize: '0.85rem',
-              fontWeight: 500,
-              marginBottom: '1.5rem',
+              backgroundColor: 'rgba(37, 99, 235, 0.1)',
+              border: '1px solid rgba(59, 130, 246, 0.25)',
+              color: '#93c5fd',
+              fontSize: '0.825rem',
+              fontWeight: 600,
+              letterSpacing: '0.01em',
+              marginBottom: '1.75rem',
+              boxShadow: '0 0 20px -2px rgba(37, 99, 235, 0.2)',
             }}
           >
-            <Sparkles size={14} />
+            <Sparkles size={13} style={{ color: 'var(--accent)' }} />
             <span>Student Project Collaboration Platform</span>
           </div>
 
+          {/* Heading */}
           <h1
             style={{
-              fontSize: 'clamp(2.2rem, 5vw, 3.4rem)',
+              fontSize: 'clamp(2.4rem, 5.5vw, 3.8rem)',
               fontWeight: 800,
-              letterSpacing: '-0.03em',
+              letterSpacing: '-0.035em',
               marginBottom: '1.5rem',
-              lineHeight: 1.15,
+              lineHeight: 1.12,
             }}
           >
             Find Your Team. <br />
-            <span style={{ color: 'var(--accent)' }}>Build Something Great.</span>
+            <span
+              style={{
+                background: 'linear-gradient(135deg, #60a5fa 0%, #38bdf8 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+              }}
+            >
+              Build Something Great.
+            </span>
           </h1>
 
+          {/* Core Message */}
           <p
             style={{
               fontSize: '1.15rem',
               color: 'var(--text-muted)',
-              lineHeight: 1.6,
+              lineHeight: 1.65,
               marginBottom: '2.5rem',
-              maxWidth: '680px',
+              maxWidth: '660px',
               margin: '0 auto 2.5rem',
             }}
           >
             Find the right teammates, turn your ideas into projects, and build something meaningful together.
           </p>
 
+          {/* CTA Buttons */}
           <div
             style={{
               display: 'flex',
@@ -101,6 +134,7 @@ export default function LandingPage() {
               justifyContent: 'center',
               gap: '1rem',
               flexWrap: 'wrap',
+              marginBottom: '3.5rem',
             }}
           >
             <Link to="/projects" className="btn btn-primary btn-lg">
@@ -113,16 +147,47 @@ export default function LandingPage() {
               <span>Create a Project</span>
             </Link>
           </div>
+
+          {/* Trust Metric Strip */}
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '2.5rem',
+              flexWrap: 'wrap',
+              paddingTop: '2rem',
+              borderTop: '1px solid var(--border-subtle)',
+              fontSize: '0.85rem',
+              color: 'var(--text-subtle)',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
+              <CheckCircle2 size={15} style={{ color: 'var(--success)' }} />
+              <span>Skill-Matched Teammates</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
+              <CheckCircle2 size={15} style={{ color: 'var(--success)' }} />
+              <span>Capacity Protected</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
+              <CheckCircle2 size={15} style={{ color: 'var(--success)' }} />
+              <span>Cross-University Network</span>
+            </div>
+          </div>
         </div>
       </section>
 
       {/* Value Pillars */}
-      <section style={{ padding: '4.5rem 0', borderBottom: '1px solid var(--border-card)' }}>
+      <section style={{ padding: '5rem 0', borderBottom: '1px solid var(--border-subtle)' }}>
         <div className="container">
-          <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-            <h2 style={{ marginBottom: '0.75rem' }}>Engineered for University Students</h2>
+          <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
+            <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '0.08em', display: 'block', marginBottom: '0.5rem' }}>
+              Built for Software Builders
+            </span>
+            <h2 style={{ marginBottom: '0.75rem' }}>Engineered for Real Collaboration</h2>
             <p style={{ maxWidth: '580px', margin: '0 auto' }}>
-              Connect with developers, designers, and researchers whose skills directly complement your own.
+              TeamUp removes the friction of assembling project teams across academic courses and hackathon sprints.
             </p>
           </div>
 
@@ -130,30 +195,31 @@ export default function LandingPage() {
             <div className="card">
               <div
                 style={{
-                  width: '44px',
-                  height: '44px',
+                  width: '42px',
+                  height: '42px',
                   borderRadius: 'var(--radius-sm)',
                   backgroundColor: 'var(--primary-subtle)',
-                  color: 'var(--primary)',
+                  color: '#60a5fa',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   marginBottom: '1.25rem',
+                  border: '1px solid rgba(59, 130, 246, 0.25)',
                 }}
               >
-                <Code size={22} />
+                <Code size={20} />
               </div>
-              <h3 style={{ fontSize: '1.15rem', marginBottom: '0.5rem' }}>Skill-Based Matching</h3>
-              <p style={{ fontSize: '0.9rem', lineHeight: 1.5 }}>
-                Filter projects by required technical proficiencies like React, Python, or MySQL to find roles where you can make immediate contributions.
+              <h3 style={{ fontSize: '1.15rem', marginBottom: '0.5rem' }}>Skill-Based Discovery</h3>
+              <p style={{ fontSize: '0.885rem', lineHeight: 1.55 }}>
+                Filter projects by required technical proficiencies like React, Python, or MySQL to discover initiatives where your strengths create direct impact.
               </p>
             </div>
 
             <div className="card">
               <div
                 style={{
-                  width: '44px',
-                  height: '44px',
+                  width: '42px',
+                  height: '42px',
                   borderRadius: 'var(--radius-sm)',
                   backgroundColor: 'var(--accent-subtle)',
                   color: 'var(--accent)',
@@ -161,35 +227,37 @@ export default function LandingPage() {
                   alignItems: 'center',
                   justifyContent: 'center',
                   marginBottom: '1.25rem',
+                  border: '1px solid rgba(56, 189, 248, 0.25)',
                 }}
               >
-                <Target size={22} />
+                <Target size={20} />
               </div>
-              <h3 style={{ fontSize: '1.15rem', marginBottom: '0.5rem' }}>Organized Team Formation</h3>
-              <p style={{ fontSize: '0.9rem', lineHeight: 1.5 }}>
-                Say goodbye to chaotic chat group inquiries. Manage structured applicant requests, capacities, and role assignments in one place.
+              <h3 style={{ fontSize: '1.15rem', marginBottom: '0.5rem' }}>Capacity & Role Control</h3>
+              <p style={{ fontSize: '0.885rem', lineHeight: 1.55 }}>
+                Manage team sizes with strict database constraints. Avoid overcrowded teams and ensure every contributor has defined ownership.
               </p>
             </div>
 
             <div className="card">
               <div
                 style={{
-                  width: '44px',
-                  height: '44px',
+                  width: '42px',
+                  height: '42px',
                   borderRadius: 'var(--radius-sm)',
                   backgroundColor: 'var(--success-subtle)',
-                  color: 'var(--success)',
+                  color: '#34d399',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   marginBottom: '1.25rem',
+                  border: '1px solid rgba(16, 185, 129, 0.25)',
                 }}
               >
-                <ShieldCheck size={22} />
+                <ShieldCheck size={20} />
               </div>
-              <h3 style={{ fontSize: '1.15rem', marginBottom: '0.5rem' }}>Verified Campus Network</h3>
-              <p style={{ fontSize: '0.9rem', lineHeight: 1.5 }}>
-                Collaborate with peers from your university and neighboring institutions with visible department, GitHub, and portfolio credentials.
+              <h3 style={{ fontSize: '1.15rem', marginBottom: '0.5rem' }}>Campus Identity</h3>
+              <p style={{ fontSize: '0.885rem', lineHeight: 1.55 }}>
+                Evaluate applications with verified university and department credentials, GitHub repository portfolios, and technical proficiencies.
               </p>
             </div>
           </div>
@@ -197,43 +265,73 @@ export default function LandingPage() {
       </section>
 
       {/* How It Works */}
-      <section style={{ padding: '4.5rem 0', borderBottom: '1px solid var(--border-card)', backgroundColor: 'var(--bg-surface)' }}>
+      <section style={{ padding: '5rem 0', borderBottom: '1px solid var(--border-subtle)', backgroundColor: 'var(--bg-surface)' }}>
         <div className="container">
           <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
+            <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '0.08em', display: 'block', marginBottom: '0.5rem' }}>
+              Workflow
+            </span>
             <h2 style={{ marginBottom: '0.75rem' }}>How TeamUp Works</h2>
             <p style={{ maxWidth: '540px', margin: '0 auto' }}>
-              A straightforward process from concept to team collaboration.
+              A structured lifecycle from pitch to team collaboration.
             </p>
           </div>
 
-          <div className="grid-3" style={{ position: 'relative' }}>
-            <div className="card" style={{ backgroundColor: 'var(--bg-main)' }}>
-              <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--primary)', marginBottom: '0.75rem' }}>
-                STEP 01
-              </div>
-              <h3 style={{ fontSize: '1.15rem', marginBottom: '0.65rem' }}>Discover or Propose</h3>
-              <p style={{ fontSize: '0.9rem' }}>
-                Browse existing initiatives across web, AI, and cybersecurity, or publish your own project concept with specific skill requirements.
+          <div className="grid-3">
+            <div className="card" style={{ backgroundColor: 'var(--bg-card)' }}>
+              <span
+                style={{
+                  fontSize: '0.75rem',
+                  fontFamily: 'var(--font-mono)',
+                  color: 'var(--primary)',
+                  fontWeight: 700,
+                  display: 'block',
+                  marginBottom: '0.85rem',
+                }}
+              >
+                01 // DISCOVER OR PUBLISH
+              </span>
+              <h3 style={{ fontSize: '1.15rem', marginBottom: '0.65rem' }}>Define Project Scope</h3>
+              <p style={{ fontSize: '0.885rem' }}>
+                Browse ongoing initiatives or publish your own project concept specifying target team size, goals, and technical stacks.
               </p>
             </div>
 
-            <div className="card" style={{ backgroundColor: 'var(--bg-main)' }}>
-              <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--accent)', marginBottom: '0.75rem' }}>
-                STEP 02
-              </div>
+            <div className="card" style={{ backgroundColor: 'var(--bg-card)' }}>
+              <span
+                style={{
+                  fontSize: '0.75rem',
+                  fontFamily: 'var(--font-mono)',
+                  color: 'var(--accent)',
+                  fontWeight: 700,
+                  display: 'block',
+                  marginBottom: '0.85rem',
+                }}
+              >
+                02 // CONNECT & APPLY
+              </span>
               <h3 style={{ fontSize: '1.15rem', marginBottom: '0.65rem' }}>Apply with Skills</h3>
-              <p style={{ fontSize: '0.9rem' }}>
-                Send a join request explaining what you bring to the team. Project owners review applicant profiles, skills, and portfolios.
+              <p style={{ fontSize: '0.885rem' }}>
+                Submit a join request specifying what you bring to the team. Leads review candidate profiles, code repositories, and technical skills.
               </p>
             </div>
 
-            <div className="card" style={{ backgroundColor: 'var(--bg-main)' }}>
-              <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--success)', marginBottom: '0.75rem' }}>
-                STEP 03
-              </div>
-              <h3 style={{ fontSize: '1.15rem', marginBottom: '0.65rem' }}>Collaborate & Ship</h3>
-              <p style={{ fontSize: '0.9rem' }}>
-                Once accepted, join the official roster, access project repositories, and ship your academic or hackathon build on schedule.
+            <div className="card" style={{ backgroundColor: 'var(--bg-card)' }}>
+              <span
+                style={{
+                  fontSize: '0.75rem',
+                  fontFamily: 'var(--font-mono)',
+                  color: 'var(--success)',
+                  fontWeight: 700,
+                  display: 'block',
+                  marginBottom: '0.85rem',
+                }}
+              >
+                03 // COLLABORATE & SHIP
+              </span>
+              <h3 style={{ fontSize: '1.15rem', marginBottom: '0.65rem' }}>Form Official Roster</h3>
+              <p style={{ fontSize: '0.885rem' }}>
+                Accepted applicants become active members on the project team, access collaboration links, and build on schedule.
               </p>
             </div>
           </div>
@@ -241,7 +339,7 @@ export default function LandingPage() {
       </section>
 
       {/* Featured Projects (Live from DB) */}
-      <section style={{ padding: '4.5rem 0', borderBottom: '1px solid var(--border-card)' }}>
+      <section style={{ padding: '5rem 0', borderBottom: '1px solid var(--border-subtle)' }}>
         <div className="container">
           <div
             style={{
@@ -254,15 +352,18 @@ export default function LandingPage() {
             }}
           >
             <div>
-              <h2 style={{ marginBottom: '0.5rem' }}>Featured Projects</h2>
-              <p>Active projects currently seeking teammates.</p>
+              <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '0.08em', display: 'block', marginBottom: '0.5rem' }}>
+                Active Opportunities
+              </span>
+              <h2 style={{ marginBottom: '0.35rem' }}>Featured Projects</h2>
+              <p>Teams actively recruiting contributors right now.</p>
             </div>
             <Link
               to="/projects"
               className="btn btn-outline btn-sm"
               style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}
             >
-              <span>View All Projects</span>
+              <span>View Directory</span>
               <ArrowRight size={14} />
             </Link>
           </div>
@@ -279,7 +380,7 @@ export default function LandingPage() {
             <div className="card" style={{ textAlign: 'center', padding: '3rem' }}>
               <p>No featured projects found at this time.</p>
               <Link to="/projects/create" className="btn btn-primary btn-sm" style={{ marginTop: '1rem' }}>
-                Create First Project
+                Publish Project
               </Link>
             </div>
           )}
@@ -287,11 +388,11 @@ export default function LandingPage() {
       </section>
 
       {/* Disciplines & Categories */}
-      <section style={{ padding: '4rem 0' }}>
+      <section style={{ padding: '4.5rem 0' }}>
         <div className="container">
           <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
             <h2 style={{ marginBottom: '0.5rem' }}>Explore Collaboration Domains</h2>
-            <p>From hackathon sprints to full-semester capstone engineering.</p>
+            <p>From hackathon prototypes to multi-semester academic engineering.</p>
           </div>
 
           <div
@@ -328,7 +429,7 @@ export default function LandingPage() {
                   }}
                 >
                   <Icon size={16} style={{ color: 'var(--primary)' }} />
-                  <span style={{ fontWeight: 500, fontSize: '0.95rem' }}>{cat.label}</span>
+                  <span style={{ fontWeight: 600, fontSize: '0.9rem' }}>{cat.label}</span>
                 </Link>
               );
             })}

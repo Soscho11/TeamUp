@@ -105,3 +105,4 @@ INSERT INTO notifications (id, user_id, type, title, message, related_project_id
 (3, 1, 'join_request_accepted', 'Join request accepted', 'Your request to join AgroSense was accepted.', 2, 3, TRUE),
 (4, 2, 'join_request_received', 'New join request received', 'Anika Tabassum requested to join AgroSense.', 2, 4, FALSE)
 ON DUPLICATE KEY UPDATE title=VALUES(title);
+

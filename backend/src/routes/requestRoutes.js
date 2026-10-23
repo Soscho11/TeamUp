@@ -16,3 +16,4 @@ router.patch('/:id/status', requireAuth, validateBody(validateUpdateStatus), req
 router.delete('/:id', requireAuth, requestController.deleteRequest);
 
 module.exports = router;
+

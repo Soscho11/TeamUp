@@ -117,3 +117,4 @@ CREATE TABLE IF NOT EXISTS notifications (
     CONSTRAINT fk_notifications_request FOREIGN KEY (related_request_id) REFERENCES join_requests(id) ON DELETE SET NULL,
     INDEX idx_notifications_user_read (user_id, is_read, created_at)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+

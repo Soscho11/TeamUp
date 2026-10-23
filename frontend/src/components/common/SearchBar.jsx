@@ -53,3 +53,4 @@ export default function SearchBar({ value, onChange, onClear, placeholder = 'Sea
     </div>
   );
 }
+

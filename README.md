@@ -380,3 +380,4 @@ All API responses follow the uniform JSON structure:
 ## 14. License
 
 This project is licensed under the MIT License.
+

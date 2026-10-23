@@ -57,7 +57,7 @@ export default function Navbar() {
         {/* Brand */}
         <Link to="/" className="brand" onClick={() => setMobileMenuOpen(false)}>
           <div className="brand-icon">
-            <Users size={20} />
+            <Users size={18} />
           </div>
           <span>TeamUp</span>
         </Link>
@@ -68,7 +68,7 @@ export default function Navbar() {
             to="/projects"
             className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
           >
-            <Compass size={17} />
+            <Compass size={15} />
             <span>Explore</span>
           </NavLink>
 
@@ -78,7 +78,7 @@ export default function Navbar() {
                 to="/dashboard"
                 className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
               >
-                <LayoutDashboard size={17} />
+                <LayoutDashboard size={15} />
                 <span>Dashboard</span>
               </NavLink>
 
@@ -86,7 +86,7 @@ export default function Navbar() {
                 to="/my-projects"
                 className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
               >
-                <FolderGit2 size={17} />
+                <FolderGit2 size={15} />
                 <span>My Projects</span>
               </NavLink>
 
@@ -94,7 +94,7 @@ export default function Navbar() {
                 to="/requests"
                 className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
               >
-                <Inbox size={17} />
+                <Inbox size={15} />
                 <span>Requests</span>
               </NavLink>
             </>
@@ -106,7 +106,7 @@ export default function Navbar() {
           {user ? (
             <>
               <Link to="/projects/create" className="btn btn-primary btn-sm">
-                <PlusCircle size={15} />
+                <PlusCircle size={14} />
                 <span className="hide-sm">Create Project</span>
               </Link>
 
@@ -117,19 +117,20 @@ export default function Navbar() {
                   className="btn btn-ghost btn-sm"
                   onClick={() => setNotifOpen(!notifOpen)}
                   aria-label="Notifications"
-                  style={{ position: 'relative', padding: '0.45rem' }}
+                  style={{ position: 'relative', padding: '0.45rem', borderRadius: 'var(--radius-sm)' }}
                 >
-                  <Bell size={18} />
+                  <Bell size={17} />
                   {unreadCount > 0 && (
                     <span
                       style={{
                         position: 'absolute',
-                        top: '4px',
-                        right: '4px',
-                        width: '8px',
-                        height: '8px',
+                        top: '5px',
+                        right: '5px',
+                        width: '7px',
+                        height: '7px',
                         borderRadius: '50%',
                         backgroundColor: 'var(--accent)',
+                        boxShadow: '0 0 8px var(--accent)',
                       }}
                     />
                   )}
@@ -138,7 +139,7 @@ export default function Navbar() {
                 {notifOpen && <NotificationPanel onClose={() => setNotifOpen(false)} />}
               </div>
 
-              {/* User Menu */}
+              {/* User Dropdown */}
               <div ref={userRef} style={{ position: 'relative' }}>
                 <button
                   type="button"
@@ -148,13 +149,15 @@ export default function Navbar() {
                     alignItems: 'center',
                     gap: '0.5rem',
                     background: 'none',
-                    border: 'none',
+                    border: '1px solid transparent',
+                    padding: '2px',
+                    borderRadius: 'var(--radius-full)',
                     cursor: 'pointer',
                     color: 'inherit',
                   }}
                 >
                   <UserAvatar name={user.name} size="sm" />
-                  <ChevronDown size={14} style={{ color: 'var(--text-muted)' }} />
+                  <ChevronDown size={13} style={{ color: 'var(--text-subtle)' }} />
                 </button>
 
                 {userDropdownOpen && (
@@ -164,24 +167,25 @@ export default function Navbar() {
                       top: '100%',
                       right: 0,
                       marginTop: '0.5rem',
-                      width: '210px',
-                      backgroundColor: 'var(--bg-surface)',
+                      width: '220px',
+                      backgroundColor: 'var(--bg-surface-elevated)',
                       border: '1px solid var(--border-card)',
                       borderRadius: 'var(--radius-md)',
-                      boxShadow: 'var(--shadow-lg)',
+                      boxShadow: 'var(--shadow-modal)',
                       zIndex: 150,
                       padding: '0.5rem 0',
+                      animation: 'scaleUp 0.15s var(--ease-spring)',
                     }}
                   >
                     <div
                       style={{
-                        padding: '0.65rem 1rem',
-                        borderBottom: '1px solid var(--border-card)',
+                        padding: '0.75rem 1rem',
+                        borderBottom: '1px solid var(--border-subtle)',
                         marginBottom: '0.35rem',
                       }}
                     >
-                      <div style={{ fontWeight: 600, fontSize: '0.9rem' }}>{user.name}</div>
-                      <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{user.email}</div>
+                      <div style={{ fontWeight: 700, fontSize: '0.885rem', color: 'var(--text-main)' }}>{user.name}</div>
+                      <div style={{ fontSize: '0.75rem', color: 'var(--text-subtle)', overflow: 'hidden', textOverflow: 'ellipsis' }}>{user.email}</div>
                     </div>
 
                     <Link
@@ -190,14 +194,14 @@ export default function Navbar() {
                       style={{
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '0.6rem',
-                        padding: '0.6rem 1rem',
-                        fontSize: '0.875rem',
-                        color: 'var(--text-main)',
+                        gap: '0.65rem',
+                        padding: '0.55rem 1rem',
+                        fontSize: '0.865rem',
+                        color: 'var(--text-secondary)',
                       }}
                       className="nav-link"
                     >
-                      <User size={15} />
+                      <User size={14} />
                       <span>My Profile</span>
                     </Link>
 
@@ -207,9 +211,9 @@ export default function Navbar() {
                       style={{
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '0.6rem',
-                        padding: '0.6rem 1rem',
-                        fontSize: '0.875rem',
+                        gap: '0.65rem',
+                        padding: '0.55rem 1rem',
+                        fontSize: '0.865rem',
                         color: '#f87171',
                         background: 'none',
                         border: 'none',
@@ -218,7 +222,7 @@ export default function Navbar() {
                         cursor: 'pointer',
                       }}
                     >
-                      <LogOut size={15} />
+                      <LogOut size={14} />
                       <span>Log Out</span>
                     </button>
                   </div>
@@ -255,10 +259,10 @@ export default function Navbar() {
           style={{
             backgroundColor: 'var(--bg-surface)',
             borderBottom: '1px solid var(--border-card)',
-            padding: '1rem 1.5rem',
+            padding: '1.25rem 1.5rem',
             display: 'flex',
             flexDirection: 'column',
-            gap: '1rem',
+            gap: '0.75rem',
           }}
         >
           <Link
@@ -266,7 +270,7 @@ export default function Navbar() {
             onClick={() => setMobileMenuOpen(false)}
             className="nav-link"
           >
-            <Compass size={18} />
+            <Compass size={16} />
             <span>Explore Projects</span>
           </Link>
 
@@ -277,7 +281,7 @@ export default function Navbar() {
                 onClick={() => setMobileMenuOpen(false)}
                 className="nav-link"
               >
-                <LayoutDashboard size={18} />
+                <LayoutDashboard size={16} />
                 <span>Dashboard</span>
               </Link>
 
@@ -286,7 +290,7 @@ export default function Navbar() {
                 onClick={() => setMobileMenuOpen(false)}
                 className="nav-link"
               >
-                <FolderGit2 size={18} />
+                <FolderGit2 size={16} />
                 <span>My Projects</span>
               </Link>
 
@@ -295,7 +299,7 @@ export default function Navbar() {
                 onClick={() => setMobileMenuOpen(false)}
                 className="nav-link"
               >
-                <Inbox size={18} />
+                <Inbox size={16} />
                 <span>Join Requests</span>
               </Link>
 
@@ -304,7 +308,7 @@ export default function Navbar() {
                 onClick={() => setMobileMenuOpen(false)}
                 className="nav-link"
               >
-                <User size={18} />
+                <User size={16} />
                 <span>Profile</span>
               </Link>
 
@@ -314,7 +318,7 @@ export default function Navbar() {
                 className="btn btn-primary"
                 style={{ width: '100%', marginTop: '0.5rem' }}
               >
-                <PlusCircle size={16} />
+                <PlusCircle size={15} />
                 <span>Create Project</span>
               </Link>
 
@@ -322,9 +326,9 @@ export default function Navbar() {
                 type="button"
                 onClick={handleLogout}
                 className="btn btn-outline"
-                style={{ width: '100%' }}
+                style={{ width: '100%', marginTop: '0.25rem' }}
               >
-                <LogOut size={16} />
+                <LogOut size={15} />
                 <span>Log Out</span>
               </button>
             </>

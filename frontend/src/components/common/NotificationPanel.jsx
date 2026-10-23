@@ -134,3 +134,4 @@ export default function NotificationPanel({ onClose }) {
     </div>
   );
 }
+

@@ -45,3 +45,4 @@ module.exports = {
   setAuthCookie,
   clearAuthCookie,
 };
+

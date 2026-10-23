@@ -90,22 +90,23 @@ export default function RegisterPage() {
           width: '100%',
           maxWidth: '520px',
           padding: '2.25rem',
+          boxShadow: '0 20px 40px -10px rgba(0,0,0,0.6)',
         }}
       >
         <div style={{ textAlign: 'center', marginBottom: '1.75rem' }}>
           <div
             className="brand-icon"
-            style={{ margin: '0 auto 1rem', width: '42px', height: '42px' }}
+            style={{ margin: '0 auto 1.15rem', width: '38px', height: '38px' }}
           >
-            <UserPlus size={22} />
+            <UserPlus size={20} />
           </div>
-          <h2 style={{ fontSize: '1.5rem', marginBottom: '0.4rem' }}>Create Student Account</h2>
-          <p style={{ fontSize: '0.9rem' }}>Join the university collaboration network</p>
+          <h2 style={{ fontSize: '1.45rem', marginBottom: '0.35rem', fontWeight: 800 }}>Create Student Account</h2>
+          <p style={{ fontSize: '0.875rem' }}>Join the university collaboration network</p>
         </div>
 
         {apiError && (
           <div className="alert alert-danger" role="alert">
-            <AlertCircle size={18} style={{ flexShrink: 0, marginTop: '2px' }} />
+            <AlertCircle size={17} style={{ flexShrink: 0, marginTop: '2px' }} />
             <span>{apiError}</span>
           </div>
         )}
@@ -116,7 +117,7 @@ export default function RegisterPage() {
             id="name"
             value={formData.name}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            placeholder="Rahim Ahmed"
+            placeholder="e.g. Rahim Ahmed"
             error={errors.name}
             required
           />
@@ -220,10 +221,10 @@ export default function RegisterPage() {
           <button
             type="submit"
             className="btn btn-primary"
-            style={{ width: '100%', marginTop: '1.25rem', height: '42px' }}
+            style={{ width: '100%', marginTop: '1.25rem', height: '42px', fontSize: '0.925rem' }}
             disabled={loading}
           >
-            <UserPlus size={16} />
+            <UserPlus size={15} />
             <span>{loading ? 'Creating Account...' : 'Complete Registration'}</span>
           </button>
         </form>
@@ -234,12 +235,12 @@ export default function RegisterPage() {
             paddingTop: '1.25rem',
             borderTop: '1px solid var(--border-subtle)',
             textAlign: 'center',
-            fontSize: '0.875rem',
+            fontSize: '0.865rem',
             color: 'var(--text-muted)',
           }}
         >
           Already have an account?{' '}
-          <Link to="/login" style={{ color: 'var(--accent)', fontWeight: 500 }}>
+          <Link to="/login" style={{ color: 'var(--accent)', fontWeight: 600 }}>
             Log in here
           </Link>
         </div>
