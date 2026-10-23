@@ -10,6 +10,19 @@ const api = axios.create({
   },
 });
 
+// Request interceptor to attach session token fallback for cross-domain deployments
+api.interceptors.request.use((config) => {
+  try {
+    const token = sessionStorage.getItem('teamup_session_token');
+    if (token && !config.headers.Authorization) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+  } catch (err) {
+    // Ignore storage errors in restricted contexts
+  }
+  return config;
+});
+
 // Response interceptor for consistent error extraction
 api.interceptors.response.use(
   (response) => {
@@ -34,4 +47,3 @@ api.interceptors.response.use(
 );
 
 export default api;
-

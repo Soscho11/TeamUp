@@ -17,6 +17,9 @@ export function AuthProvider({ children }) {
         }
       } catch (err) {
         setUser(null);
+        try {
+          sessionStorage.removeItem('teamup_session_token');
+        } catch (_) {}
       } finally {
         setLoading(false);
       }
@@ -28,12 +31,22 @@ export function AuthProvider({ children }) {
   const login = async (credentials) => {
     const data = await authService.login(credentials);
     setUser(data.user);
+    if (data.token) {
+      try {
+        sessionStorage.setItem('teamup_session_token', data.token);
+      } catch (_) {}
+    }
     return data.user;
   };
 
   const register = async (userData) => {
     const data = await authService.register(userData);
     setUser(data.user);
+    if (data.token) {
+      try {
+        sessionStorage.setItem('teamup_session_token', data.token);
+      } catch (_) {}
+    }
     return data.user;
   };
 
@@ -42,6 +55,9 @@ export function AuthProvider({ children }) {
       await authService.logout();
     } finally {
       setUser(null);
+      try {
+        sessionStorage.removeItem('teamup_session_token');
+      } catch (_) {}
     }
   };
 
@@ -63,4 +79,3 @@ export function useAuth() {
   }
   return context;
 }
-
