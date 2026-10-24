@@ -29,6 +29,11 @@ async function register({ name, email, password, university, department }) {
   );
 
   const userId = result.insertId;
+
+  // Record initial login timestamp
+  await pool.execute('UPDATE users SET last_login_at = CURRENT_TIMESTAMP WHERE id = ?', [userId]);
+  console.log(`[AUTH] New user registered: ${normalizedEmail} (ID: ${userId}, University: ${university.trim()})`);
+
   const user = {
     id: userId,
     name: name.trim(),
@@ -66,6 +71,10 @@ async function login({ email, password }) {
     throw error;
   }
 
+  // Update last login timestamp and log authentication event
+  await pool.execute('UPDATE users SET last_login_at = CURRENT_TIMESTAMP WHERE id = ?', [userRecord.id]);
+  console.log(`[AUTH] User logged in: ${userRecord.email} (ID: ${userRecord.id}) at ${new Date().toISOString()}`);
+
   const user = {
     id: userRecord.id,
     name: userRecord.name,
@@ -75,6 +84,7 @@ async function login({ email, password }) {
     bio: userRecord.bio,
     github_url: userRecord.github_url,
     portfolio_url: userRecord.portfolio_url,
+    last_login_at: new Date().toISOString(),
   };
 
   const token = generateToken({ id: user.id, email: user.email });
@@ -84,7 +94,7 @@ async function login({ email, password }) {
 
 async function getCurrentUser(userId) {
   const [rows] = await pool.execute(
-    `SELECT id, name, email, university, department, bio, github_url, portfolio_url, created_at
+    `SELECT id, name, email, university, department, bio, github_url, portfolio_url, last_login_at, created_at
      FROM users WHERE id = ?`,
     [userId]
   );

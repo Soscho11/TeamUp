@@ -40,6 +40,7 @@ async function migrate() {
         password_hash VARCHAR(255) NOT NULL,
         university VARCHAR(150) NOT NULL,
         department VARCHAR(150) NOT NULL,
+        last_login_at TIMESTAMP NULL,
         bio TEXT NULL,
         github_url VARCHAR(255) NULL,
         portfolio_url VARCHAR(255) NULL,
