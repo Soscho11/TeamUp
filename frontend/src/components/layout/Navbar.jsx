@@ -4,6 +4,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { useNotifications } from '../../hooks/useNotifications';
 import UserAvatar from '../common/UserAvatar';
 import NotificationPanel from '../common/NotificationPanel';
+import ThemeToggle from '../common/ThemeToggle';
 import {
   Users,
   Compass,
@@ -240,6 +241,9 @@ export default function Navbar() {
             </>
           )}
 
+          {/* Theme Toggle */}
+          <ThemeToggle />
+
           {/* Mobile hamburger button */}
           <button
             type="button"
@@ -352,6 +356,10 @@ export default function Navbar() {
               </Link>
             </div>
           )}
+
+          <div style={{ marginTop: '0.25rem', paddingTop: '0.75rem', borderTop: '1px solid var(--border-subtle)' }}>
+            <ThemeToggle showLabel />
+          </div>
         </div>
       )}
 

@@ -260,14 +260,14 @@ export default function DashboardPage() {
                 <YAxis stroke="#64748b" fontSize={11} allowDecimals={false} tickLine={false} />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: '#0d121c',
-                    borderColor: 'rgba(255, 255, 255, 0.12)',
+                    backgroundColor: 'var(--bg-surface)',
+                    borderColor: 'var(--border-card)',
                     borderRadius: '8px',
-                    color: '#f8fafc',
+                    color: 'var(--text-main)',
                     fontSize: '12px',
-                    boxShadow: '0 8px 24px rgba(0,0,0,0.5)',
+                    boxShadow: 'var(--shadow-card)',
                   }}
-                  cursor={{ fill: 'rgba(255, 255, 255, 0.04)' }}
+                  cursor={{ fill: 'var(--primary-subtle)' }}
                 />
                 <Bar dataKey="count" radius={[5, 5, 0, 0]}>
                   {statOverviewData.map((entry, index) => (

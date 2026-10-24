@@ -125,7 +125,7 @@ export default function ProjectCard({ project }) {
             style={{
               width: '100%',
               height: '4px',
-              backgroundColor: 'rgba(255, 255, 255, 0.06)',
+              backgroundColor: 'var(--border-subtle)',
               borderRadius: '9999px',
               overflow: 'hidden',
             }}

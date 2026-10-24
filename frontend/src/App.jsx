@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { ThemeProvider } from './context/ThemeContext';
 import { AuthProvider } from './context/AuthContext';
 import { NotificationProvider } from './context/NotificationContext';
 
@@ -49,12 +50,13 @@ function NotFound() {
 export default function App() {
   return (
     <BrowserRouter>
-      <AuthProvider>
-        <NotificationProvider>
-          <div className="app-container">
-            <Navbar />
-            <main className="main-content">
-              <Routes>
+      <ThemeProvider>
+        <AuthProvider>
+          <NotificationProvider>
+            <div className="app-container">
+              <Navbar />
+              <main className="main-content">
+                <Routes>
                 {/* Public Routes */}
                 <Route path="/" element={<LandingPage />} />
                 <Route path="/login" element={<LoginPage />} />
@@ -113,6 +115,7 @@ export default function App() {
           </div>
         </NotificationProvider>
       </AuthProvider>
-    </BrowserRouter>
+    </ThemeProvider>
+  </BrowserRouter>
   );
 }
