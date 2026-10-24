@@ -7,6 +7,8 @@ import EmptyState from '../../components/common/EmptyState';
 import ConfirmationDialog from '../../components/common/ConfirmationDialog';
 import Modal from '../../components/common/Modal';
 import FormField from '../../components/common/FormField';
+import ProjectCard from '../../components/projects/ProjectCard';
+import { bookmarkService } from '../../services/bookmarkService';
 import {
   FolderGit2,
   PlusCircle,
@@ -17,6 +19,7 @@ import {
   ExternalLink,
   Layers,
   CheckCircle,
+  Bookmark,
 } from 'lucide-react';
 
 const CATEGORIES = [
@@ -40,7 +43,10 @@ const STATUS_OPTIONS = [
 ];
 
 export default function MyProjectsPage() {
+  const [activeTab, setActiveTab] = useState('created');
   const [projects, setProjects] = useState([]);
+  const [bookmarks, setBookmarks] = useState([]);
+  const [bookmarksLoading, setBookmarksLoading] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -54,12 +60,27 @@ export default function MyProjectsPage() {
   const [savingEdit, setSavingEdit] = useState(false);
   const [editError, setEditError] = useState('');
 
+  const fetchBookmarks = async () => {
+    try {
+      setBookmarksLoading(true);
+      const res = await bookmarkService.getUserBookmarks();
+      setBookmarks(res.data?.projects || []);
+    } catch (err) {
+      console.error('Failed to load bookmarks:', err.message);
+    } finally {
+      setBookmarksLoading(false);
+    }
+  };
+
   const fetchMyProjects = async () => {
     try {
       setLoading(true);
       setError('');
       const data = await projectService.getMyProjects();
       setProjects(data || []);
+      // Also pre-fetch bookmarks count
+      const bmRes = await bookmarkService.getUserBookmarks();
+      setBookmarks(bmRes.data?.projects || []);
     } catch (err) {
       setError(err.message || 'Failed to load your projects');
     } finally {
@@ -143,25 +164,97 @@ export default function MyProjectsPage() {
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          marginBottom: '2rem',
+          marginBottom: '1.5rem',
           flexWrap: 'wrap',
           gap: '1rem',
         }}
       >
         <div>
-          <h1 style={{ fontSize: '1.85rem', marginBottom: '0.35rem' }}>My Created Projects</h1>
+          <h1 style={{ fontSize: '1.85rem', marginBottom: '0.35rem' }}>
+            {activeTab === 'created' ? 'My Created Projects' : 'Saved Watchlist'}
+          </h1>
           <p style={{ color: 'var(--text-muted)' }}>
-            Manage membership rosters, applicant join requests, and project life cycles.
+            {activeTab === 'created'
+              ? 'Manage membership rosters, applicant join requests, and project life cycles.'
+              : 'Keep track of student projects and teams you have bookmarked.'}
           </p>
         </div>
 
-        <Link to="/projects/create" className="btn btn-primary">
-          <PlusCircle size={16} />
-          <span>New Project</span>
-        </Link>
+        {activeTab === 'created' && (
+          <Link to="/projects/create" className="btn btn-primary">
+            <PlusCircle size={16} />
+            <span>New Project</span>
+          </Link>
+        )}
       </div>
 
-      {projects.length === 0 ? (
+      {/* Tabs */}
+      <div style={{ display: 'inline-flex', padding: '3px', backgroundColor: 'var(--bg-surface-elevated)', border: '1px solid var(--border-card)', borderRadius: 'var(--radius-sm)', marginBottom: '1.75rem' }}>
+        <button
+          type="button"
+          onClick={() => setActiveTab('created')}
+          className="btn btn-sm"
+          style={{
+            backgroundColor: activeTab === 'created' ? 'var(--bg-card)' : 'transparent',
+            color: activeTab === 'created' ? 'var(--text-main)' : 'var(--text-muted)',
+            boxShadow: activeTab === 'created' ? 'var(--shadow-subtle)' : 'none',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '0.45rem',
+          }}
+        >
+          <FolderGit2 size={14} />
+          <span>Projects I Lead ({projects.length})</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => {
+            setActiveTab('bookmarks');
+            fetchBookmarks();
+          }}
+          className="btn btn-sm"
+          style={{
+            backgroundColor: activeTab === 'bookmarks' ? 'var(--bg-card)' : 'transparent',
+            color: activeTab === 'bookmarks' ? 'var(--text-main)' : 'var(--text-muted)',
+            boxShadow: activeTab === 'bookmarks' ? 'var(--shadow-subtle)' : 'none',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '0.45rem',
+          }}
+        >
+          <Bookmark size={14} />
+          <span>Saved Watchlist ({bookmarks.length})</span>
+        </button>
+      </div>
+
+      {activeTab === 'bookmarks' ? (
+        bookmarks.length === 0 ? (
+          <div className="card">
+            <EmptyState
+              icon={Bookmark}
+              title="No Saved Projects"
+              description="You have not saved any projects yet. Browse Explore Projects and click the bookmark icon to save them here."
+              actionText="Explore Projects"
+              actionLink="/projects"
+            />
+          </div>
+        ) : (
+          <div className="grid-3">
+            {bookmarks.map((p) => (
+              <ProjectCard
+                key={p.id}
+                project={p}
+                onBookmarkChange={(id, isSaved) => {
+                  if (!isSaved) {
+                    setBookmarks((prev) => prev.filter((b) => b.id !== id));
+                  }
+                }}
+              />
+            ))}
+          </div>
+        )
+      ) : projects.length === 0 ? (
         <div className="card">
           <EmptyState
             icon={FolderGit2}

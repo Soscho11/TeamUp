@@ -1,10 +1,17 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import SkillBadge from '../common/SkillBadge';
 import UserAvatar from '../common/UserAvatar';
-import { Users, ArrowUpRight, Layers, Sparkles } from 'lucide-react';
+import { Users, ArrowUpRight, Layers, Sparkles, Bookmark } from 'lucide-react';
+import { useAuth } from '../../hooks/useAuth';
+import { bookmarkService } from '../../services/bookmarkService';
 
-export default function ProjectCard({ project }) {
+export default function ProjectCard({ project, onBookmarkChange }) {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const [bookmarked, setBookmarked] = useState(Boolean(project.is_bookmarked));
+  const [bookmarkLoading, setBookmarkLoading] = useState(false);
+
   const {
     id,
     title,
@@ -17,7 +24,36 @@ export default function ProjectCard({ project }) {
     owner_name,
     owner_university,
     skills = [],
+    match_percentage = 0,
   } = project;
+
+  const handleBookmarkToggle = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+
+    try {
+      setBookmarkLoading(true);
+      const nextState = !bookmarked;
+      setBookmarked(nextState);
+      const res = await bookmarkService.toggleBookmark(id);
+      if (res && res.data) {
+        setBookmarked(res.data.is_bookmarked);
+      }
+      if (onBookmarkChange) {
+        onBookmarkChange(id, nextState);
+      }
+    } catch (err) {
+      // Revert on error
+      setBookmarked(bookmarked);
+    } finally {
+      setBookmarkLoading(false);
+    }
+  };
 
   const getStatusBadge = (st) => {
     switch (st) {
@@ -58,13 +94,49 @@ export default function ProjectCard({ project }) {
       }}
     >
       <div>
-        {/* Top Badges */}
+        {/* Top Badges & Actions */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.85rem' }}>
-          <span className="badge badge-neutral" style={{ fontSize: '0.725rem' }}>
-            <Layers size={11} />
-            <span>{category}</span>
-          </span>
-          {getStatusBadge(status)}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', flexWrap: 'wrap' }}>
+            <span className="badge badge-neutral" style={{ fontSize: '0.725rem' }}>
+              <Layers size={11} />
+              <span>{category}</span>
+            </span>
+
+            {match_percentage > 0 && (
+              <span
+                className={`badge ${match_percentage >= 60 ? 'badge-success' : 'badge-primary'}`}
+                style={{ fontSize: '0.725rem' }}
+                title={`${match_percentage}% of required skills match your profile`}
+              >
+                <Sparkles size={11} />
+                <span>{match_percentage}% Match</span>
+              </span>
+            )}
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            {getStatusBadge(status)}
+            <button
+              type="button"
+              onClick={handleBookmarkToggle}
+              disabled={bookmarkLoading}
+              title={bookmarked ? 'Remove from bookmarks' : 'Save project'}
+              aria-label={bookmarked ? 'Remove from bookmarks' : 'Save project'}
+              style={{
+                background: 'none',
+                border: 'none',
+                color: bookmarked ? 'var(--accent)' : 'var(--text-subtle)',
+                cursor: 'pointer',
+                padding: '3px',
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                transition: 'color var(--transition-fast), transform var(--transition-fast)',
+              }}
+            >
+              <Bookmark size={16} fill={bookmarked ? 'currentColor' : 'none'} />
+            </button>
+          </div>
         </div>
 
         {/* Title */}

@@ -9,6 +9,9 @@ import Modal from '../../components/common/Modal';
 import ConfirmationDialog from '../../components/common/ConfirmationDialog';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 import ErrorState from '../../components/common/ErrorState';
+import ProjectDiscussionBoard from '../../components/projects/ProjectDiscussionBoard';
+import ProjectKanbanBoard from '../../components/projects/ProjectKanbanBoard';
+import { bookmarkService } from '../../services/bookmarkService';
 import {
   Users,
   Calendar,
@@ -23,6 +26,8 @@ import {
   Shield,
   Trash2,
   Clock,
+  Bookmark,
+  Sparkles,
 } from 'lucide-react';
 
 export default function ProjectDetailsPage() {
@@ -45,16 +50,41 @@ export default function ProjectDetailsPage() {
   const [memberToRemove, setMemberToRemove] = useState(null);
   const [removingMember, setRemovingMember] = useState(false);
 
+  // Bookmark state
+  const [isBookmarked, setIsBookmarked] = useState(false);
+  const [bookmarkLoading, setBookmarkLoading] = useState(false);
+
   const fetchProjectDetails = async () => {
     try {
       setLoading(true);
       setError('');
       const data = await projectService.getProjectById(id);
       setProject(data);
+      setIsBookmarked(Boolean(data.is_bookmarked));
     } catch (err) {
       setError(err.message || 'Failed to load project details');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleToggleBookmark = async () => {
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+    try {
+      setBookmarkLoading(true);
+      const next = !isBookmarked;
+      setIsBookmarked(next);
+      const res = await bookmarkService.toggleBookmark(project.id);
+      if (res && res.data) {
+        setIsBookmarked(res.data.is_bookmarked);
+      }
+    } catch (err) {
+      setIsBookmarked(isBookmarked);
+    } finally {
+      setBookmarkLoading(false);
     }
   };
 
@@ -132,6 +162,8 @@ export default function ProjectDetailsPage() {
     is_owner,
     is_member,
     user_request,
+    matched_skills = [],
+    match_percentage = 0,
   } = project;
 
   const isFull = available_capacity <= 0;
@@ -139,20 +171,57 @@ export default function ProjectDetailsPage() {
   return (
     <div className="container" style={{ padding: '2.5rem 1rem' }}>
       {/* Breadcrumb / Top Bar */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '0.75rem' }}>
         <Link to="/projects" className="btn btn-ghost btn-sm" style={{ paddingLeft: 0 }}>
           ← Back to Projects
         </Link>
-        {is_owner && (
-          <Link to="/my-projects" className="btn btn-secondary btn-sm">
-            Manage in My Projects
-          </Link>
-        )}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
+          <button
+            type="button"
+            onClick={handleToggleBookmark}
+            disabled={bookmarkLoading}
+            className="btn btn-outline btn-sm"
+            style={{
+              color: isBookmarked ? 'var(--accent)' : 'var(--text-secondary)',
+              borderColor: isBookmarked ? 'var(--accent)' : 'var(--border-card)',
+            }}
+          >
+            <Bookmark size={14} fill={isBookmarked ? 'currentColor' : 'none'} />
+            <span>{isBookmarked ? 'Saved to Watchlist' : 'Bookmark Project'}</span>
+          </button>
+
+          {is_owner && (
+            <Link to="/my-projects" className="btn btn-secondary btn-sm">
+              Manage in My Projects
+            </Link>
+          )}
+        </div>
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '2rem' }}>
         {/* Main Content Column */}
         <div>
+          {/* Skill Match Alert */}
+          {user && match_percentage > 0 && (
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.65rem',
+                padding: '0.85rem 1.15rem',
+                borderRadius: 'var(--radius-sm)',
+                backgroundColor: match_percentage >= 60 ? 'var(--success-subtle)' : 'var(--primary-subtle)',
+                border: `1px solid ${match_percentage >= 60 ? 'rgba(16, 185, 129, 0.3)' : 'rgba(37, 99, 235, 0.3)'}`,
+                marginBottom: '1.5rem',
+              }}
+            >
+              <Sparkles size={16} style={{ color: match_percentage >= 60 ? 'var(--success)' : 'var(--primary)', flexShrink: 0 }} />
+              <span style={{ fontSize: '0.875rem', color: 'var(--text-main)', lineHeight: 1.45 }}>
+                <strong>{match_percentage}% Skill Match:</strong> Your profile matches {matched_skills.length} of {skills.length} required skill{skills.length === 1 ? '' : 's'} ({matched_skills.map((s) => s.name).join(', ')}).
+              </span>
+            </div>
+          )}
+
           {/* Header Card */}
           <div className="card" style={{ marginBottom: '1.75rem' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
@@ -303,6 +372,22 @@ export default function ProjectDetailsPage() {
               ))}
             </div>
           </div>
+
+          {/* Tasks & Milestones Board */}
+          <ProjectKanbanBoard
+            projectId={project.id}
+            members={members}
+            isMember={is_member}
+            isOwner={is_owner}
+          />
+
+          {/* Discussions & Community Board */}
+          <ProjectDiscussionBoard
+            projectId={project.id}
+            isMember={is_member}
+            isOwner={is_owner}
+            user={user}
+          />
         </div>
 
         {/* Sidebar Column: Team Capacity & Join Action */}

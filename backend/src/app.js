@@ -13,6 +13,9 @@ const userRoutes = require('./routes/userRoutes');
 const projectRoutes = require('./routes/projectRoutes');
 const requestRoutes = require('./routes/requestRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
+const bookmarkRoutes = require('./routes/bookmarkRoutes');
+const discussionRoutes = require('./routes/discussionRoutes');
+const taskRoutes = require('./routes/taskRoutes');
 
 const app = express();
 
@@ -57,6 +60,9 @@ app.use('/api/users', userRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/requests', requestRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use('/api/bookmarks', bookmarkRoutes);
+app.use('/api/discussions', discussionRoutes);
+app.use('/api/tasks', taskRoutes);
 
 // 6. 404 Handler
 app.use(notFoundHandler);

@@ -333,7 +333,91 @@ async function run() {
       'Accepted user receives "join_request_accepted" notification'
     );
 
-    // 7. Clean up test project
+    // 7. Bookmarks / Watchlist
+    console.log('\nTesting Project Bookmarks:');
+    const addBookmark = await request(`/api/projects/${projectId}/bookmark`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${userTwoToken}` },
+    });
+    assert(addBookmark.status === 200, 'User can toggle bookmark on project');
+    assert(addBookmark.data.data.is_bookmarked === true, 'Project is marked as bookmarked');
+
+    const getBookmarks = await request('/api/bookmarks', {
+      headers: { Authorization: `Bearer ${userTwoToken}` },
+    });
+    assert(getBookmarks.status === 200, 'User can fetch bookmarked projects list');
+    assert(
+      getBookmarks.data.data.projects.some((p) => p.id === projectId),
+      'Bookmarked project is present in user bookmarks'
+    );
+
+    const removeBookmark = await request(`/api/projects/${projectId}/bookmark`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${userTwoToken}` },
+    });
+    assert(removeBookmark.data.data.is_bookmarked === false, 'Toggling bookmark again un-bookmarks project');
+
+    // 8. Project Discussions & Q&A
+    console.log('\nTesting Discussions & Q&A:');
+    const postQuestion = await request(`/api/projects/${projectId}/discussions`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${userThreeToken}` },
+      body: { content: 'Is prior experience with Docker required?', type: 'public_qa' },
+    });
+    assert(postQuestion.status === 201, 'Student can post public Q&A question');
+
+    const getQA = await request(`/api/projects/${projectId}/discussions?type=public_qa`);
+    assert(getQA.status === 200, 'Anyone can fetch public Q&A discussions');
+    assert(getQA.data.data.discussions.length >= 1, 'Q&A discussions contains the posted question');
+
+    // Team internal discussion test (userTwo is accepted team member, userThree is not)
+    const postTeamMsg = await request(`/api/projects/${projectId}/discussions`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${userTwoToken}` },
+      body: { content: 'Here is our team shared repo link', type: 'team_internal' },
+    });
+    assert(postTeamMsg.status === 201, 'Accepted team member can post to internal team discussion');
+
+    const nonMemberViewInternal = await request(`/api/projects/${projectId}/discussions?type=team_internal`, {
+      headers: { Authorization: `Bearer ${userThreeToken}` },
+    });
+    assert(nonMemberViewInternal.status === 403, 'Non-team member is forbidden from reading internal discussion');
+
+    // 9. Tasks & Kanban Board
+    console.log('\nTesting Team Tasks & Milestones:');
+    const createTaskRes = await request(`/api/projects/${projectId}/tasks`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${userOneToken}` },
+      body: {
+        title: 'Setup Initial CI/CD Pipeline',
+        description: 'Configure GitHub Actions for automated test runs',
+        priority: 'high',
+      },
+    });
+    assert(createTaskRes.status === 201, 'Owner can create project task');
+    const createdTaskId = createTaskRes.data.data.task.id;
+    assert(createTaskRes.data.data.task.status === 'todo', 'New task defaults to "todo" status');
+
+    const updateTaskRes = await request(`/api/tasks/${createdTaskId}`, {
+      method: 'PATCH',
+      headers: { Authorization: `Bearer ${userTwoToken}` },
+      body: { status: 'in_progress' },
+    });
+    assert(updateTaskRes.status === 200, 'Team member can update task status to "in_progress"');
+    assert(updateTaskRes.data.data.task.status === 'in_progress', 'Task status is updated in database');
+
+    const nonMemberUpdateTask = await request(`/api/tasks/${createdTaskId}`, {
+      method: 'PATCH',
+      headers: { Authorization: `Bearer ${userThreeToken}` },
+      body: { status: 'completed' },
+    });
+    assert(nonMemberUpdateTask.status === 403, 'Non-team member cannot update task');
+
+    const getTasksRes = await request(`/api/projects/${projectId}/tasks`);
+    assert(getTasksRes.status === 200, 'Tasks endpoint returns 200');
+    assert(getTasksRes.data.data.tasks.length >= 1, 'Tasks array contains created task');
+
+    // 10. Clean up test project
     console.log('\nTesting Project Deletion:');
     const deleteRes = await request(`/api/projects/${projectId}`, {
       method: 'DELETE',

@@ -7,10 +7,12 @@ import FilterPanel from '../../components/common/FilterPanel';
 import SkeletonLoader from '../../components/common/SkeletonLoader';
 import EmptyState from '../../components/common/EmptyState';
 import ErrorState from '../../components/common/ErrorState';
-import { ChevronLeft, ChevronRight, PlusCircle } from 'lucide-react';
+import { ChevronLeft, ChevronRight, PlusCircle, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../../hooks/useAuth';
 
 export default function ProjectsPage() {
+  const { user } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [projects, setProjects] = useState([]);
@@ -25,6 +27,7 @@ export default function ProjectsPage() {
   const [skill, setSkill] = useState(searchParams.get('skill') || '');
   const [sortBy, setSortBy] = useState(searchParams.get('sortBy') || 'created_at');
   const [page, setPage] = useState(parseInt(searchParams.get('page'), 10) || 1);
+  const [recommended, setRecommended] = useState(searchParams.get('recommended') === 'true');
 
   const fetchProjects = async () => {
     try {
@@ -38,6 +41,7 @@ export default function ProjectsPage() {
         sortBy,
         page,
         limit: 9,
+        recommended,
       });
       setProjects(data.projects || []);
       setPagination(data.pagination || { page: 1, totalPages: 1, total: 0 });
@@ -57,10 +61,11 @@ export default function ProjectsPage() {
     if (skill) params.skill = skill;
     if (sortBy !== 'created_at') params.sortBy = sortBy;
     if (page > 1) params.page = page;
+    if (recommended) params.recommended = 'true';
 
     setSearchParams(params, { replace: true });
     fetchProjects();
-  }, [search, category, status, skill, sortBy, page]);
+  }, [search, category, status, skill, sortBy, page, recommended]);
 
   const handleResetFilters = () => {
     setSearch('');
@@ -97,6 +102,44 @@ export default function ProjectsPage() {
           <PlusCircle size={16} />
           <span>Create Project</span>
         </Link>
+      </div>
+
+      {/* Discovery Mode Tabs (All vs Recommended) */}
+      <div style={{ display: 'inline-flex', padding: '3px', backgroundColor: 'var(--bg-surface-elevated)', border: '1px solid var(--border-card)', borderRadius: 'var(--radius-sm)', marginBottom: '1.25rem' }}>
+        <button
+          type="button"
+          onClick={() => {
+            setRecommended(false);
+            setPage(1);
+          }}
+          className="btn btn-sm"
+          style={{
+            backgroundColor: !recommended ? 'var(--bg-card)' : 'transparent',
+            color: !recommended ? 'var(--text-main)' : 'var(--text-muted)',
+            boxShadow: !recommended ? 'var(--shadow-subtle)' : 'none',
+          }}
+        >
+          All Projects
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            setRecommended(true);
+            setPage(1);
+          }}
+          className="btn btn-sm"
+          style={{
+            backgroundColor: recommended ? 'var(--bg-card)' : 'transparent',
+            color: recommended ? 'var(--text-main)' : 'var(--text-muted)',
+            boxShadow: recommended ? 'var(--shadow-subtle)' : 'none',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '0.4rem',
+          }}
+        >
+          <Sparkles size={13} style={{ color: 'var(--accent)' }} />
+          <span>Recommended for You</span>
+        </button>
       </div>
 
       {/* Search & Filter Bar */}

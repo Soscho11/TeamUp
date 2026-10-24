@@ -1,6 +1,7 @@
 const app = require('./app');
 const config = require('./config/env');
 const { testConnection, pool } = require('./config/db');
+const { initDatabaseTables } = require('./config/dbInit');
 const logger = require('./utils/logger');
 
 let server;
@@ -11,7 +12,10 @@ async function startServer() {
     await testConnection();
     logger.info(`Connected to MySQL database "${config.db.database}" at ${config.db.host}:${config.db.port}`);
 
-    // 2. Start HTTP server
+    // 2. Initialize relational database tables if not exist
+    await initDatabaseTables();
+
+    // 3. Start HTTP server
     server = app.listen(config.port, () => {
       logger.info(`TeamUp backend server running in ${config.nodeEnv} mode on port ${config.port}`);
     });

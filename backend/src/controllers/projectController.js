@@ -3,7 +3,10 @@ const { successResponse } = require('../utils/apiResponse');
 
 async function getProjects(req, res, next) {
   try {
-    const result = await projectService.getProjects(req.query);
+    const result = await projectService.getProjects({
+      ...req.query,
+      currentUserId: req.user ? req.user.id : null,
+    });
     return successResponse(res, 'Projects retrieved successfully', result);
   } catch (err) {
     next(err);

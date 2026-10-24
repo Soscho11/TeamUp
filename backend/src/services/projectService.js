@@ -97,6 +97,8 @@ async function getProjects({
   limit = 9,
   sortBy = 'created_at',
   order = 'DESC',
+  currentUserId = null,
+  recommended = false,
 } = {}) {
   const pageNum = Math.max(1, parseInt(page, 10) || 1);
   const limitNum = Math.min(50, Math.max(1, parseInt(limit, 10) || 9));
@@ -202,6 +204,43 @@ async function getProjects({
       project.skills = skillsByProjectId[project.id] || [];
       project.available_capacity = Math.max(0, project.desired_team_size - project.current_members);
     }
+
+    // 4. Attach bookmark status and skill matching for authenticated user
+    if (currentUserId) {
+      const [bookmarks] = await pool.execute(
+        `SELECT project_id FROM bookmarks WHERE user_id = ? AND project_id IN (${placeholders})`,
+        [currentUserId, ...projectIds]
+      );
+      const bookmarkedSet = new Set(bookmarks.map((b) => b.project_id));
+
+      const [userSkills] = await pool.execute(
+        `SELECT LOWER(s.name) AS skill_name
+         FROM user_skills us
+         JOIN skills s ON us.skill_id = s.id
+         WHERE us.user_id = ?`,
+        [currentUserId]
+      );
+      const userSkillNames = new Set(userSkills.map((s) => s.skill_name));
+
+      for (const project of projects) {
+        project.is_bookmarked = bookmarkedSet.has(project.id);
+        const matched = project.skills.filter((sk) => userSkillNames.has(sk.name.toLowerCase()));
+        project.matched_skills = matched;
+        project.match_percentage = project.skills.length > 0
+          ? Math.round((matched.length / project.skills.length) * 100)
+          : 0;
+      }
+
+      if (recommended === 'true' || recommended === true) {
+        projects.sort((a, b) => b.match_percentage - a.match_percentage);
+      }
+    } else {
+      for (const project of projects) {
+        project.is_bookmarked = false;
+        project.matched_skills = [];
+        project.match_percentage = 0;
+      }
+    }
   }
 
   return {
@@ -290,10 +329,35 @@ async function getProjectById(projectId, currentUserId = null) {
     );
 
     project.user_request = userReq.length > 0 ? userReq[0] : null;
+
+    // Check if user has bookmarked this project
+    const [bm] = await pool.execute(
+      'SELECT 1 FROM bookmarks WHERE user_id = ? AND project_id = ?',
+      [currentUserId, projectId]
+    );
+    project.is_bookmarked = bm.length > 0;
+
+    // Calculate skill match
+    const [userSkills] = await pool.execute(
+      `SELECT LOWER(s.name) AS skill_name
+       FROM user_skills us
+       JOIN skills s ON us.skill_id = s.id
+       WHERE us.user_id = ?`,
+      [currentUserId]
+    );
+    const userSkillNames = new Set(userSkills.map((s) => s.skill_name));
+    const matched = project.skills.filter((sk) => userSkillNames.has(sk.name.toLowerCase()));
+    project.matched_skills = matched;
+    project.match_percentage = project.skills.length > 0
+      ? Math.round((matched.length / project.skills.length) * 100)
+      : 0;
   } else {
     project.is_owner = false;
     project.is_member = false;
     project.user_request = null;
+    project.is_bookmarked = false;
+    project.matched_skills = [];
+    project.match_percentage = 0;
   }
 
   return project;

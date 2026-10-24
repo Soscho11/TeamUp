@@ -48,3 +48,4 @@ export default function ThemeToggle({ showLabel = false, className = '' }) {
     </button>
   );
 }
+
