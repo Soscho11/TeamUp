@@ -14,6 +14,11 @@ function errorHandler(err, req, res, next) {
     return errorResponse(res, 'A record with this information already exists.', [], 409);
   }
 
+  // MySQL Connection / Network failure
+  if (['ENOTFOUND', 'ECONNREFUSED', 'ETIMEDOUT', 'PROTOCOL_CONNECTION_LOST'].includes(err.code) || err.message?.includes('connect ECONNREFUSED')) {
+    return errorResponse(res, 'Database connection unavailable. Please check cloud database service status or connection string.', [], 503);
+  }
+
   // MySQL Foreign key constraint failure
   if (err.code === 'ER_NO_REFERENCED_ROW_2') {
     return errorResponse(res, 'Referenced item does not exist.', [], 400);
